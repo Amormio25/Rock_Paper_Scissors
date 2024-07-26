@@ -1,5 +1,3 @@
-// test for external link console.log('hello')
-
 // score values
 let humanScore = 0,
     computerScore = 0;
@@ -14,8 +12,7 @@ let getComputerChoice = () => {
         cpu = 'paper'
     } else {
         cpu = 'scissors'
-    }
-    console.log(`The computer chose ${cpu}!`);
+    } 
     return cpu;
 }
 
@@ -27,7 +24,6 @@ let getHumanChoice = () => {
         alert('Invalid option. Please try again.');
         return getHumanChoice();    
     } else {
-        console.log(`You chose ${myChoice}!`);
         return myChoice;
     }
  }
@@ -55,9 +51,22 @@ let playRound = (humanChoice, computerChoice) => {
         alert('You win! Scissors beats paper!')
         humanScore++
     }
-    alert(`Your score: ${humanScore}. Computer score: ${computerScore}.`)
 }
 
-let humanSelection = getHumanChoice()
-let computerSelection = getComputerChoice()
-playRound(humanSelection, computerSelection)
+let playGame = () => {
+    for (i = 0; i < 5; i++) {
+        humanSelection = getHumanChoice()
+        computerSelection = getComputerChoice()
+        playRound(humanSelection, computerSelection)
+        alert(`Your score: ${humanScore}. Computer score: ${computerScore}.`)
+    }   
+    if (humanScore > computerScore) {
+        alert(`You win! Final score is ${humanScore} to ${computerScore}.`)
+    } else if (humanScore === computerScore) {
+        alert( `Tie! Final score is ${humanScore} to ${computerScore}.`)
+    } else {
+        alert(`You lose! Final score is ${humanScore} to ${computerScore}.`)
+    }
+}
+
+playGame()
