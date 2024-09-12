@@ -1,0 +1,335 @@
+@font-face {
+    font-family: 'Brutal Font Pro';
+    src: url('Rock_Paper_Scissors/Brutal Font Pro Regular/Brutal Font Pro Regular.ttf');
+    font-family: 'Pixel';
+    src: url('press-start/prstartk.ttf')
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* body {
+    background-image: url('ringRPS.jpeg'); /* Replace with your image path */
+   /* background-size: cover;  /* Ensures the image covers the entire screen */
+/*    background-position: center;  /* Centers the image */
+ /*   background-repeat: no-repeat;  /* Ensures the image does not repeat */
+ /*   background-attachment: fixed;  /* Keeps the image fixed during scroll */
+/*} */
+
+#container {
+    background-image: url('./rps_images/ringRPS.jpeg'); /* Replace with your image path */
+    background-size: cover;  /* Ensures the image covers the entire screen */
+    background-position: center;  /* Centers the image */
+    background-repeat: no-repeat;  /* Ensures the image does not repeat */
+     /* background-attachment: fixed;  /* Keeps the image fixed during scroll  */
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+    height: 100vh
+}
+
+#header {
+    height: 20%;
+    width: 100%;
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+#playerBarBlack {
+    background-color: black;
+    width: 35%;
+    height: 40px;
+    margin: 70px 0px 0px 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+
+#playerName {
+    position: absolute;
+    color: white;
+    font-family: 'Pixel';
+    font-size: large;
+    margin: 0px 320px 60px 0px;
+}
+
+#playerBarWhite {
+    position: inherit;
+    background-color: white;
+    width: 98.5%;
+    height: 75%;
+} 
+
+#playerLoseHealthBar {
+    position: inherit;
+    background: linear-gradient(to right, rgb(106, 70, 60, 0.9) , rgb(111, 98, 63, 0.9));
+    width: 98.5%;
+    height: 80%;
+    margin: 3px 0px 0px 3.5px;
+}
+
+#playerBarOrange {
+    position: inherit;
+    background: linear-gradient(to right, rgb(255, 55, 0) , rgb(255, 179, 0));
+    width: 40%;
+    height: 100%;
+}
+
+#playerBarBlack2 {
+    background-color: black;
+    width: 35%;
+    height: 40px;
+    margin: 70px 100px 0px 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+} 
+
+#cpuName {
+    position: absolute;
+    color: white;
+    font-family: 'Pixel';
+    font-size: large;
+    margin: 0px 0px 60px 360px;
+}
+
+#playerBarWhite2 {
+    position: inherit;
+    background-color: white;
+    width: 98.5%;
+    height: 75%;
+} 
+
+#playerLoseHealthBar2 {
+    position: inherit;
+    background: linear-gradient(to right, rgb(106, 70, 60, 0.9) , rgb(111, 98, 63, 0.9));
+    width: 98.5%;
+    height: 80%;
+    margin: 3px 0px 0px 3.5px;
+}
+
+#playerBarOrange2 {
+    position: inherit;
+    background: linear-gradient(to right, rgb(255, 55, 0) , rgb(255, 179, 0));
+    width: 40%;
+    height: 100%;
+}
+
+#counters {
+    display: flex;
+    flex-direction: column;
+    width: 8%;
+    height: 100%;
+    align-items: center;
+}
+
+#round {
+    box-sizing: border-box;
+    height: 40%;
+    padding-top: 30px;
+    font-size: 28px;    
+    font-family: 'Pixel';
+    color: white;
+}
+
+#timer {
+    height: 40%;
+    background: linear-gradient(to right, rgb(255, 55, 0) , rgb(255, 179, 0));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Brutal Font Pro';
+    font-size: 80px;
+}
+
+#rps {
+    height: 30%;
+    width: 100%;    
+    flex: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#choices {
+    height: 75%;
+    display: flex;
+    justify-content: center;
+}
+
+#rockSpace {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 20%;
+}
+
+#paperSpace {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 20%;
+}
+
+#scissorsSpace {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 20%;
+}
+
+.rpsChoiceBox {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70%;
+    width: 55%;
+    background-color: white;
+    border: 4px solid black;
+    border-radius: 10%;
+}
+
+#rock {
+    position: inherit;
+    height: 80%;
+    width: 70%;
+    margin-right: 5px;
+    padding: 0;
+    /* -webkit-transform: scaleX(-1);
+    transform: scaleX(-1); */
+}
+
+.imgHover {
+    transform: scale(1.2)
+}
+
+#paper {
+    position: inherit;
+    height: 80%;
+    width: 60%;
+    margin-right: 10px;
+    padding: 0;
+}
+
+#scissors {
+    position: inherit;
+    height: 95%;
+    width: 75%;
+    padding: 0;
+}
+
+#gameText {
+    height: 25%;
+    width: 100%;
+    font-size: 20px;    
+    font-family: 'Pixel';
+    color: white;
+    text-align: center;
+    cursor: default;
+}
+
+#gameCtrl {
+    position: inherit;
+    background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+#game {
+    height: 50%;
+    flex: auto;
+    width: 100%;
+}
+
+#nil {
+    position: absolute;
+    height: 450px;
+    width: auto;
+    margin: 0px 0px 40px 120px;
+    filter: hue-rotate(330deg);
+}
+
+#nil2 {
+    position: absolute;
+    height: 450px;
+    width: auto;
+    margin: 0px 120px 40px 0px;
+    right: 0; 
+    transform: scaleX(-1);
+}
+
+#tieBlock {
+    position: absolute;
+    height: 450px;
+    width: auto;
+    left: 27%;
+    right: 0;
+    z-index: 0;
+    filter: hue-rotate(330deg);
+    opacity: 0;
+}
+
+#tieBlock2 {
+    position: absolute;
+    height: 450px;
+    width: auto;
+    transform: scaleX(-1);
+    left: 50%;
+    right: 0;
+    z-index: 0;
+    opacity: 0;
+}
+
+#tiePunch {
+    position: absolute;
+    height: 435px;
+    width: auto;
+    right: 42%;
+    z-index: 1;
+    filter: hue-rotate(330deg);
+    opacity: 0;
+}
+
+#tiePunch2 {
+    position: absolute;
+    height: 435px;
+    width: auto;
+    transform: scaleX(-1);
+    left: 41%;
+    opacity: 0;
+}
+
+#KO {
+    position: absolute;
+    height: 255px;
+    width: auto;
+    left: 20%;
+    top: 73%;
+    filter: hue-rotate(330deg);
+    opacity: 0;
+}
+
+#KO2 {
+    position: absolute;
+    height: 255px;
+    width: auto;
+    transform: scaleX(-1);
+    left: 42%;
+    right: 0;
+    top: 73%;
+    opacity: 0;
+}

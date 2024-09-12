@@ -3,9 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Rock, Paper, Scissors, KO!</title>
 </head>
 <body>
-    <script type = 'text/JavaScript' src = 'script.js'></script>
+    <link rel="stylesheet" href="style.css">
+    <script type='text/JavaScript' src='script.js' defer></script>
+    <div id="container">
+        <div id="header">
+            <div id="playerBarBlack">
+                <div id="playerName">Challenger</div>
+                <div id="playerBarWhite">
+                    <div id="playerLoseHealthBar">
+                        <div id="playerBarOrange"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="counters">
+                <div id="round">
+                    R3
+                </div>
+                <div id="timer">
+                    10
+                </div>
+            </div>
+            <div id="playerBarBlack2">
+                <div id="cpuName">Champion</div>
+                <div id="playerBarWhite2">
+                    <div id="playerLoseHealthBar2">
+                        <div id="playerBarOrange2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="rps">
+            <div id="choices">
+                <div id="rockSpace">
+                    <div class="rpsChoiceBox">
+                        <img id='rock' src="./rps_images/chamaRPS.webp">
+                    </div>
+                </div>
+                <div id="paperSpace">
+                    <div class="rpsChoiceBox">
+                        <img id='paper' src="./rps_images/paperRPS.png">
+                    </div>
+                </div>
+                <div id="scissorsSpace">
+                    <div class="rpsChoiceBox">
+                        <img id='scissors' src="./rps_images/scissorsRPS.png">
+                    </div>
+                </div>
+            </div>
+            <div id="gameText">
+                <!-- You lost the game! -->
+                <button id="gameCtrl">Play</button>
+            </div>
+        </div>
+        <div id="game">
+            <img src="./rps_images/ippo1RPS.png" id="nil">
+            <img src="./rps_images/ippo2RPS.png" id="tieBlock">
+            <img src="./rps_images/ippo3RPS.png" id="tiePunch">
+            <img src="./rps_images/ippo4RPS.png" id="KO">
+
+            <img src="./rps_images/ippo1RPS.png" id="nil2">
+            <img src="./rps_images/ippo2RPS.png" id="tieBlock2">
+            <img src="./rps_images/ippo3RPS.png" id="tiePunch2">
+            <img src="./rps_images/ippo4RPS.png" id="KO2">
+        </div>
+    </div>
 </body>
 </html>
