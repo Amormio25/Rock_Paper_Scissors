@@ -80,8 +80,9 @@ html, body {
 #playerBarOrange {
     position: inherit;
     background: linear-gradient(to right, rgb(255, 55, 0) , rgb(255, 179, 0));
-    width: 40%;
+    width: 80%;
     height: 100%;
+    transition: width 0.3s ease;
 }
 
 #playerBarBlack2 {
@@ -110,7 +111,7 @@ html, body {
 } 
 
 #playerLoseHealthBar2 {
-    position: inherit;
+    position: relative;
     background: linear-gradient(to right, rgb(106, 70, 60, 0.9) , rgb(111, 98, 63, 0.9));
     width: 98.5%;
     height: 80%;
@@ -120,8 +121,12 @@ html, body {
 #playerBarOrange2 {
     position: inherit;
     background: linear-gradient(to right, rgb(255, 55, 0) , rgb(255, 179, 0));
-    width: 40%;
+    width: 100%;
     height: 100%;
+    transform: scaleX(-1);
+    transform-origin: left;
+    left: 499px;
+    transition: width 0.3s ease-in-out;
 }
 
 #counters {

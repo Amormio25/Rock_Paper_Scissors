@@ -1,74 +1,6 @@
-// In our UI, the player should be able to play the game by clicking 
-// on buttons rather than typing their answer in a prompt.
-
-// For now, remove the logic that plays exactly five rounds.
-
-// Create three buttons, one for each selection. 
-
-// Add an event listener to the buttons that call your playRound function 
-// with the correct playerSelection every time a button is clicked. 
-// (you can keep the console.logs for this step)
-
-// Add a div for displaying results and change all of your console.logs into DOM methods.
-
-// Display the running score, and announce a winner of the game once one player reaches 5 points.
-
-// You will likely have to refactor (rework/rewrite) your original code to make it work for this. 
-// That’s OK! Reworking old code is an important part of a programmer’s life.
-
-
-
-
-// Plan
-
-// Upper UI
-    // player and cpu 5 health bars
-    // health bars are surrounded by black border, gray padding, red bars that fade out when player or cpu loses
-
-// Game UI
-    // Ippo (player) on left, Miyata (cpu) on right
-    // Display round n, fight with slight time interval before every fight
-
-    // 10 second timer
-    // choose rps with the images as hover buttons below the upper UI
-    // depending on who wins, make event listener change the fighters (ippo down if player loses, miyata punch)
-    // Display KO! followed by You Lose or You win, etc, with time interval
-    // reset timer
-
-
-// Look at Canva design
-// The three main divs are the 
-    // header (health bar, timer, Round)
-        // design health bar on stylesheet
-        // create timer on script.js
-        // update round (could simply display text and change that text upon each round on js file)
-    // choice rectangle
-        // make white box turn slightly gray on hover, and rps img larger on hover
-        // make green box if win, red if lose, white if tie
-    // game UI
-        // using event listeners on the buttons, change ippo pic and coordinates depending on the result
-// let gameDiv = document.querySelector('#game')
-// let bg = document.querySelector('#bg')
-
-
-// gameDiv.append(bg)
-// let par = document.createElement('p')
-// par.style.cssText = 'font-family: "Pixel"; color: white;'
-// par.textContent = 'FIGHT!'
-// bg.body.append(par)
-
-
-
-
-
-
-
-
-//  GAME PLAN
-//  To start and restart a game, have middle text clickable, then change it back to text for ('you lost/win')
-
 //  create all variables
-let headerElements = document.querySelector('#header');
+let playerHealth = document.querySelector('#playerBarOrange');
+let cpuHealth = document.querySelector('#playerBarOrange2');
 let round = document.querySelector('#round');
 let roundTimer = document.querySelector('#timer');
 let rpsChoice = document.querySelector('#choices');
@@ -86,6 +18,7 @@ function startGame() {
     });
     // gameButton.dispatchEvent(startEvent);
     document.dispatchEvent(startEvent);
+    timer();
 };
 
 gameButton.addEventListener('click', () => {
@@ -94,38 +27,54 @@ gameButton.addEventListener('click', () => {
         console.log(startEvent.detail.message);
         gameResponses.removeChild(gameButton);
         setTimeout(() => {
-            gameResponses.textContent = 'Choose your Character!';
+            gameResponses.textContent = 'Fight!';
         }, 350);
     });
     startGame();
+    addChoiceListeners();
 });
 
 function timer() {
-    let seconds = 10;
+    let seconds = 2;
     const countdown = setInterval(() => {
-        seconds -= 1;
         roundTimer.textContent = seconds.toString();
-        if (seconds <= 0) {
+        seconds -= 1;
+        if (seconds < 0) {
             clearInterval(countdown);
             timerExpired();
         }
     }, 1000);
+    //  stop activity if player makes a choice
     document.addEventListener('choiceClicked', () => {
         clearInterval(countdown);
     });
 };
 
 function timerExpired() {
-    rpsChoice.removeEventListener('mouseover', hoverToggleOn);
-    rpsChoice.removeEventListener('mouseout', hoverToggleOff);
-    imgChoice.forEach((img) => {
-        img.classList.remove('imgHover');
-    });
-    rpsChoice.removeEventListener('click', removeChoiceListeners);
-    matchEnd();
+    removeChoiceListeners();
+    reducePlayerHealth();
+    gameResponses.textContent = 'You ran out of time!'
+    roundEnd();
+};
+
+function reducePlayerHealth() {
+    let playerHealthStyle = getComputedStyle(playerHealth);
+    let width = parseFloat(playerHealthStyle.width); 
+    let parentWidth = playerHealth.parentElement.offsetWidth;
+    let percentWidth = width / parentWidth * 100;
+    let newPercentWidth = percentWidth - 20;
+    playerHealth.style.width = `${newPercentWidth}%`
 }
 
-document.addEventListener('gameStarted', timer);
+function reduceCpuHealth() {
+    let cpuHealthStyle = getComputedStyle(cpuHealth);
+    let width = parseFloat(cpuHealthStyle.width); 
+    let parentWidth = cpuHealth.parentElement.offsetWidth;
+    let percentWidth = width / parentWidth * 100;
+    let newPercentWidth = percentWidth - 20;
+    cpuHealth.style.width = `${newPercentWidth}%`
+    cpuHealth.style.left = '499px';
+}
 
 function hoverToggleOn(event) {
     if (event.target.matches('img')) {
@@ -143,67 +92,62 @@ function addChoiceListeners() {
     rpsChoice.addEventListener('mouseover', hoverToggleOn);
     rpsChoice.addEventListener('mouseout', hoverToggleOff);
 //  implement a listener for each round so that this occurs again, not just once
-    rpsChoice.addEventListener('click', removeChoiceListeners, {once: true});
+    rpsChoice.addEventListener('click', playerChoice, {once: true});
 };
 
-function removeChoiceListeners(event) {
-    if (event.target.matches('img')) {
-        imgChoice.forEach((img) => {
-            img.classList.remove('imgHover');
-        });
-    };
-    event.target.classList.add('imgHover');
+function removeChoiceListeners() {
+    imgChoice.forEach((img) => {
+        img.classList.remove('imgHover');
+    });
     // make later adjustment for green/red when it's win/lose
-    event.target.parentElement.style.backgroundColor = 'limegreen';
     rpsChoice.removeEventListener('mouseover', hoverToggleOn);
     rpsChoice.removeEventListener('mouseout', hoverToggleOff);
-    let clickEvent = new CustomEvent('choiceClicked', {
-        detail: {message: 'Choice clicked!'},
-        capture: true
-    });
-    document.dispatchEvent(clickEvent);
+    rpsChoice.removeEventListener('click', playerChoice)
 }
 
-document.addEventListener('gameStarted', addChoiceListeners);
+function playerChoice(event) {
+    if (event.target.matches('img')) {
+        event.target.classList.add('imgHover');
+        event.target.parentElement.style.backgroundColor = 'limegreen';
+        removeChoiceListeners(event);
+        let clickEvent = new CustomEvent('choiceClicked', {
+            detail: {message: 'Choice clicked!'},
+            capture: true
+        });
+        document.dispatchEvent(clickEvent);
+    };
+    // event.target.classList.add('imgHover');
+    // // make later adjustment for green/red when it's win/lose
+    // event.target.parentElement.style.backgroundColor = 'limegreen';
+    // rpsChoice.removeEventListener('mouseover', hoverToggleOn);
+    // rpsChoice.removeEventListener('mouseout', hoverToggleOff);
+    // let clickEvent = new CustomEvent('choiceClicked', {
+    //     detail: {message: 'Choice clicked!'},
+    //     capture: true
+    // });
+    // document.dispatchEvent(clickEvent);
+};
 
-// function that listens for choice clicked to change health, characters, game text, etc
+function roundEnd() {
+// call reduce function depending on loser
+    let seconds = 3;
+    const countdown = setInterval(() => {
+        gameResponses.textContent = seconds.toString()
+        seconds -= 1
+        if (seconds < 0) {
+            clearInterval(countdown);
+            gameResponses.textContent = 'Fight!'
+            startNextRound();
+        }
+    }, 1000);
+};
 
-
-// function add(event) {
-//     event.target.classList.add('imgHover');
-// }
-
-// function remove(event) {
-//     event.target.classList.remove('imgHover');
-// }
-
-// function addChoiceListeners() {
-//     console.log('setting up listeners')
-//     createChoiceListener('mouseover', 'img', add)
-//     createChoiceListener('mouseout', 'img', remove)
-// };
-
-
-
-
-
-// custom event for choice selection
-// function getHumanChoice() {
-//     console.log('working')
-//     createChoiceListener('click', 'img', () => {
-//         rpsChoice.removeEventListener('mouseover', add);
-//         rpsChoice.removeEventListener('mouseout', remove);
-//     });
-// }
-
-// getHumanChoice()
-
-
-
-
+function startNextRound() {
+    addChoiceListeners();
+    timer();
+}
 
 // when you click choice, remove the hover listeners and make choice hover as humanChoice
-
 // // human choice
 // let getHumanChoice = () => {
 //     myChoice = myChoice.toLowerCase();
@@ -214,42 +158,6 @@ document.addEventListener('gameStarted', addChoiceListeners);
 //         return myChoice;
 //     }
 //  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//      Round, Timer, Health, Characters, Choices Display
-//              choices
-
-
-
-//          Timer, Constantly runs down until choice is selected
-//      After Choice is selected, stop all events, display results
-//          Based on results, change health, characters, game text if needed
-//          Countdown with game text for next round
-//          After 3 seconds, reset timer, change round, put neutral characters, etc
-//      Keep doing this until player or cpu loses (health bar width = 0%)
-//          Declare winner, show KO, stop all events until play again comes
-
-
-
-
-
-
-
-
 
 // // score values
 // let humanScore = 0,

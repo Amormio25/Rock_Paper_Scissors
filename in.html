@@ -125,3 +125,50 @@ playGame()
 
 </body>
 </html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Width from Left</title>
+    <style>
+        #targetDiv {
+            position: relative; /* Enable positioning of the element */
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(to right, rgb(106, 70, 60, 0.9) , rgb(111, 98, 63, 0.9));
+        }
+    </style>
+</head>
+<body>
+
+<div id="targetDiv">
+    Watch this box!
+</div>
+
+<button id='a'>Decrease Width</button>
+
+<script>
+    let box = document.querySelector('#targetDiv');
+    let btn = document.querySelector('#a');
+
+    // Function to decrease width from the left
+    function decreaseWidth() {
+        const newWidth = 50; // New width in pixels
+        const originalWidth = box.clientWidth;
+        const leftPosition = parseInt(window.getComputedStyle(box).left, 10) || 0;
+        
+        // Calculate the new left position to keep the element's right edge in place
+        const newLeftPosition = leftPosition + (originalWidth - newWidth);
+        
+        // Set new width and adjust left position
+        box.style.width = `${newWidth}px`;
+        box.style.left = `${newLeftPosition}px`;
+    }
+
+    btn.addEventListener('click', decreaseWidth);
+</script>
+
+</body>
+</html> -->
