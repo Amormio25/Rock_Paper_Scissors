@@ -210,12 +210,11 @@ html, body {
     width: 70%;
     margin-right: 5px;
     padding: 0;
-    /* -webkit-transform: scaleX(-1);
-    transform: scaleX(-1); */
+    transition: 0.3s ease-out;
 }
 
 .imgHover {
-    transform: scale(1.2)
+    transform: scale(1.2);
 }
 
 #paper {
@@ -224,6 +223,7 @@ html, body {
     width: 60%;
     margin-right: 10px;
     padding: 0;
+    transition: 0.3s ease-out;
 }
 
 #scissors {
@@ -231,6 +231,7 @@ html, body {
     height: 95%;
     width: 75%;
     padding: 0;
+    transition: 0.3s ease-out;
 }
 
 #gameText {
@@ -241,6 +242,7 @@ html, body {
     color: white;
     text-align: center;
     cursor: default;
+    background-color: transparent;
 }
 
 #gameCtrl {
@@ -260,7 +262,11 @@ html, body {
     width: 100%;
 }
 
-#nil {
+#game img {
+    transition: 0.3s ease-in-out;
+}
+
+#playerNA {
     position: absolute;
     height: 450px;
     width: auto;
@@ -268,7 +274,7 @@ html, body {
     filter: hue-rotate(330deg);
 }
 
-#nil2 {
+#cpuNA {
     position: absolute;
     height: 450px;
     width: auto;
@@ -277,7 +283,7 @@ html, body {
     transform: scaleX(-1);
 }
 
-#tieBlock {
+#playerBlock {
     position: absolute;
     height: 450px;
     width: auto;
@@ -288,7 +294,7 @@ html, body {
     opacity: 0;
 }
 
-#tieBlock2 {
+#cpuBlock {
     position: absolute;
     height: 450px;
     width: auto;
@@ -299,7 +305,7 @@ html, body {
     opacity: 0;
 }
 
-#tiePunch {
+#playerPunch {
     position: absolute;
     height: 435px;
     width: auto;
@@ -309,7 +315,7 @@ html, body {
     opacity: 0;
 }
 
-#tiePunch2 {
+#cpuPunch {
     position: absolute;
     height: 435px;
     width: auto;
@@ -318,7 +324,7 @@ html, body {
     opacity: 0;
 }
 
-#KO {
+#playerKO {
     position: absolute;
     height: 255px;
     width: auto;
@@ -328,7 +334,7 @@ html, body {
     opacity: 0;
 }
 
-#KO2 {
+#cpuKO {
     position: absolute;
     height: 255px;
     width: auto;

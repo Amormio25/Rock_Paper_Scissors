@@ -1,13 +1,25 @@
 //  create all variables
-let playerHealth = document.querySelector('#playerBarOrange');
-let cpuHealth = document.querySelector('#playerBarOrange2');
-let round = document.querySelector('#round');
-let roundTimer = document.querySelector('#timer');
-let rpsChoice = document.querySelector('#choices');
-let imgChoice = document.querySelectorAll('img');
-let gameResponses = document.querySelector('#gameText');
-let gameButton = document.querySelector('#gameCtrl')
-let fightDisplay = document.querySelector('#game');
+let playerScore = 0, 
+    cpuScore = 0,
+    playerHealth = document.querySelector('#playerBarOrange'),
+    cpuHealth = document.querySelector('#playerBarOrange2'),
+    round = document.querySelector('#round'),
+    roundTimer = document.querySelector('#timer'),
+    rpsChoice = document.querySelector('#choices'),
+    imgChoice = document.querySelectorAll('img'),
+    gameResponses = document.querySelector('#gameText'),
+    gameButton = document.querySelector('#gameCtrl'),
+    fightDisplay = document.querySelectorAll('#game img'),
+    displayIds = Array.from(fightDisplay);
+    console.log(displayIds)
+    // playerPunch = document.querySelector('#playerPunch')
+    // playerBlock = document.querySelector('#playerBlock')
+    // playerKO = document.querySelector('#playerKO')
+    // playerNA = document.querySelector('#playerNA')
+    // cpuPunch = document.querySelector('#cpuPunch')
+    // cpuBlock = document.querySelector('#cpuBlock')
+    // cpuKO = document.querySelector('#cpuKO')
+    // cpuNA = document.querySelector('#cpuNA')
 
 
 function startGame() {
@@ -35,7 +47,7 @@ gameButton.addEventListener('click', () => {
 });
 
 function timer() {
-    let seconds = 2;
+    let seconds = 10;
     const countdown = setInterval(() => {
         roundTimer.textContent = seconds.toString();
         seconds -= 1;
@@ -54,7 +66,7 @@ function timerExpired() {
     removeChoiceListeners();
     reducePlayerHealth();
     gameResponses.textContent = 'You ran out of time!'
-    roundEnd();
+    startNextRound();
 };
 
 function reducePlayerHealth() {
@@ -92,7 +104,7 @@ function addChoiceListeners() {
     rpsChoice.addEventListener('mouseover', hoverToggleOn);
     rpsChoice.addEventListener('mouseout', hoverToggleOff);
 //  implement a listener for each round so that this occurs again, not just once
-    rpsChoice.addEventListener('click', playerChoice, {once: true});
+    rpsChoice.addEventListener('click', playerChoice);
 };
 
 function removeChoiceListeners() {
@@ -108,44 +120,145 @@ function removeChoiceListeners() {
 function playerChoice(event) {
     if (event.target.matches('img')) {
         event.target.classList.add('imgHover');
-        event.target.parentElement.style.backgroundColor = 'limegreen';
-        removeChoiceListeners(event);
+        removeChoiceListeners();
+        let picked = document.getElementById(event.target.id)        
+        let playerPick = event.target.id
+        let cpuPick = cpuChoice()
+        setTimeout(() => {
+            console.log('working..')
+            picked.parentElement.style.backgroundColor = 'white';
+            startNextRound();
+        }, 2000);
+
+        // result changes button color, health bar, and text
+        const result = roundResult(playerPick, cpuPick)
+        if (result === 'You lose!') {
+            event.target.parentElement.style.backgroundColor = 'red';
+            gameResponses.textContent = 'You lose!'
+        } else if (result === 'You win!') {
+            event.target.parentElement.style.backgroundColor = 'limegreen';
+            gameResponses.textContent = 'You win!'
+        } else {
+            event.target.parentElement.style.backgroundColor = 'white';
+            gameResponses.textContent = 'Tie!'
+        }
         let clickEvent = new CustomEvent('choiceClicked', {
             detail: {message: 'Choice clicked!'},
             capture: true
         });
         document.dispatchEvent(clickEvent);
     };
-    // event.target.classList.add('imgHover');
-    // // make later adjustment for green/red when it's win/lose
-    // event.target.parentElement.style.backgroundColor = 'limegreen';
-    // rpsChoice.removeEventListener('mouseover', hoverToggleOn);
-    // rpsChoice.removeEventListener('mouseout', hoverToggleOff);
-    // let clickEvent = new CustomEvent('choiceClicked', {
-    //     detail: {message: 'Choice clicked!'},
-    //     capture: true
-    // });
-    // document.dispatchEvent(clickEvent);
 };
 
-function roundEnd() {
+function cpuChoice() {
+    let rand = Math.random(),
+        cpuPick;
+    if (rand <= 1/3) {
+        cpuPick = 'rock';
+    } else if (rand <= 2/3) {
+        cpuPick = 'paper';
+    } else {
+        cpuPick = 'scissors'
+    };
+    console.log(`cpu: ${cpuPick}`)
+    return cpuPick
+};
+
+// function roundResult(playerPick, cpuPick) {
+//     if (playerPick === cpuPick) {
+//         console.log(`It\'s a tie! Both chose ${playerPick}!`)
+//     } else if (playerPick === 'rock'  && cpuPick === 'paper') {
+//         console.log('You lose! Paper beats rock!')
+//         reducePlayerHealth();
+//     } else if (playerPick === 'paper'  && cpuPick === 'scissors') {
+//         console.log('You lose! Scissors beats paper!')
+//         reducePlayerHealth();
+//     } else if (playerPick === 'scissors'  && cpuPick === 'rock') {
+//         console.log('You lose! Rock beats scissors!')
+//         reducePlayerHealth();
+//     } else if (playerPick === 'rock'  && cpuPick === 'scissors') {
+//         console.log('You win! Rock beats scissors!')
+//         reduceCpuHealth();
+//     } else if (playerPick === 'paper'  && cpuPick === 'rock') {
+//         console.log('You win! Paper beats rock!')
+//         reduceCpuHealth();
+//     } else if (playerPick === 'scissors'  && cpuPick === 'paper') {
+//         console.log('You win! Scissors beats paper!')
+//         reduceCpuHealth();
+//     }
+// };
+
+function roundResult(playerPick, cpuPick) {
+    let result;
+    imgChoice.forEach((img) => {
+        img.classList.remove('imgHover');
+    });
+    displayIds
+        .filter(img => img.id === 'playerNA' || img.id === 'cpuNA')
+        .forEach(img => img.style.opacity = 0)
+    if (playerPick === cpuPick) {
+        result = 'Tie!'
+        let rand = Math.random()
+        if (rand <= 0.5) {
+            displayIds.find(img => img.id === 'playerPunch').style.opacity = 1
+            displayIds.find(img => img.id === 'cpuBlock').style.opacity = 1
+        } else {
+            displayIds.find(img => img.id === 'playerBlock').style.opacity = 1
+            displayIds.find(img => img.id === 'cpuPunch').style.opacity = 1
+        }
+    } else if (playerPick === 'rock'  && cpuPick === 'paper') {
+        result = 'You lose!'
+        displayIds.find(img => img.id === 'cpuPunch').style.opacity = 1
+        displayIds.find(img => img.id === 'playerKO').style.opacity = 1
+        reducePlayerHealth();
+    } else if (playerPick === 'paper'  && cpuPick === 'scissors') {
+        result = 'You lose!'
+        displayIds.find(img => img.id === 'cpuPunch').style.opacity = 1
+        displayIds.find(img => img.id === 'playerKO').style.opacity = 1
+        reducePlayerHealth();
+    } else if (playerPick === 'scissors'  && cpuPick === 'rock') {
+        result = 'You lose!'
+        displayIds.find(img => img.id === 'cpuPunch').style.opacity = 1
+        displayIds.find(img => img.id === 'playerKO').style.opacity = 1
+        reducePlayerHealth();
+    } else if (playerPick === 'rock'  && cpuPick === 'scissors') {
+        result = 'You win!'
+        displayIds.find(img => img.id === 'playerPunch').style.opacity = 1
+        displayIds.find(img => img.id === 'cpuKO').style.opacity = 1
+        reduceCpuHealth();
+    } else if (playerPick === 'paper'  && cpuPick === 'rock') {
+        result = 'You win!'
+        displayIds.find(img => img.id === 'playerPunch').style.opacity = 1
+        displayIds.find(img => img.id === 'cpuKO').style.opacity = 1
+        reduceCpuHealth();
+    } else if (playerPick === 'scissors'  && cpuPick === 'paper') {
+        result = 'You win!'
+        displayIds.find(img => img.id === 'playerPunch').style.opacity = 1
+        displayIds.find(img => img.id === 'cpuKO').style.opacity = 1
+        reduceCpuHealth();
+    }
+    return result
+};
+
+function startNextRound() {
 // call reduce function depending on loser
     let seconds = 3;
     const countdown = setInterval(() => {
         gameResponses.textContent = seconds.toString()
         seconds -= 1
         if (seconds < 0) {
+            fightDisplay.forEach(img => img.style.opacity = 0);
+            displayIds
+                .filter(img => img.id === 'playerNA' || img.id === 'cpuNA')
+                .forEach(img => img.style.opacity = 1);
             clearInterval(countdown);
             gameResponses.textContent = 'Fight!'
-            startNextRound();
+            addChoiceListeners();
+            timer();
         }
     }, 1000);
 };
 
-function startNextRound() {
-    addChoiceListeners();
-    timer();
-}
 
 // when you click choice, remove the hover listeners and make choice hover as humanChoice
 // // human choice
