@@ -1,7 +1,9 @@
 //  create all variables
 let playerScore = 0, 
     cpuScore = 0,
+    playerName = document.querySelector('#playerName'),
     playerHealth = document.querySelector('#playerBarOrange'),
+    cpuName = document.querySelector('#cpuName'),
     cpuHealth = document.querySelector('#playerBarOrange2'),
     round = document.querySelector('#round'),
     roundTimer = document.querySelector('#timer'),
@@ -12,17 +14,31 @@ let playerScore = 0,
     fightDisplay = document.querySelectorAll('#game img'),
     displayIds = Array.from(fightDisplay);
     console.log(displayIds)
-    // playerPunch = document.querySelector('#playerPunch')
-    // playerBlock = document.querySelector('#playerBlock')
-    // playerKO = document.querySelector('#playerKO')
-    // playerNA = document.querySelector('#playerNA')
-    // cpuPunch = document.querySelector('#cpuPunch')
-    // cpuBlock = document.querySelector('#cpuBlock')
-    // cpuKO = document.querySelector('#cpuKO')
-    // cpuNA = document.querySelector('#cpuNA')
 
+    let playerHealthStyle
+    let playerWidth
+    let playerParentWidth
+    let playerPercentWidth
+    let playerNewPercentWidth = 100
+
+    let cpuHealthStyle
+    let cpuWidth
+    let cpuParentWidth
+    let cpuPercentWidth 
+    let cpuNewPercentWidth = 100
+
+function resetParameters() {
+    console.log("reset working")
+    playerHealth.style.width = '100%'
+    cpuHealth.style.width = '100%'
+    displayIds.forEach(img => img.style.opacity = 0)
+    displayIds
+        .filter(img => img.id === 'playerNA' || img.id === 'cpuNA')
+        .forEach(img => img.style.opacity = 1)
+}
 
 function startGame() {
+    resetParameters()
     const startEvent = new CustomEvent('gameStarted', {
         detail: {message: 'The game has started!'},
         // bubbles: true
@@ -70,22 +86,35 @@ function timerExpired() {
 };
 
 function reducePlayerHealth() {
-    let playerHealthStyle = getComputedStyle(playerHealth);
-    let width = parseFloat(playerHealthStyle.width); 
-    let parentWidth = playerHealth.parentElement.offsetWidth;
-    let percentWidth = width / parentWidth * 100;
-    let newPercentWidth = percentWidth - 20;
-    playerHealth.style.width = `${newPercentWidth}%`
+    playerHealthStyle = getComputedStyle(playerHealth);
+    playerWidth = parseFloat(playerHealthStyle.width); 
+    playerParentWidth = playerHealth.parentElement.offsetWidth;
+    playerPercentWidth = playerWidth / playerParentWidth * 100;
+    playerNewPercentWidth = playerPercentWidth - 100;
+    console.log(playerNewPercentWidth)
+    playerHealth.style.width = `${playerNewPercentWidth}%`
+    if (playerNewPercentWidth < 1) { // health bars act as listeners for ending game
+        setTimeout(() => {
+            endGame('cpu')
+        }, 2000)
+    }
+    return playerNewPercentWidth
 }
 
 function reduceCpuHealth() {
-    let cpuHealthStyle = getComputedStyle(cpuHealth);
-    let width = parseFloat(cpuHealthStyle.width); 
-    let parentWidth = cpuHealth.parentElement.offsetWidth;
-    let percentWidth = width / parentWidth * 100;
-    let newPercentWidth = percentWidth - 20;
-    cpuHealth.style.width = `${newPercentWidth}%`
+    cpuHealthStyle = getComputedStyle(cpuHealth);
+    cpuWidth = parseFloat(cpuHealthStyle.width); 
+    cpuParentWidth = cpuHealth.parentElement.offsetWidth;
+    cpuPercentWidth = cpuWidth / cpuParentWidth * 100;
+    cpuNewPercentWidth = cpuPercentWidth - 100;
+    cpuHealth.style.width = `${cpuNewPercentWidth}%`
     cpuHealth.style.left = '499px';
+    if (cpuNewPercentWidth < 1) { // health bars act as listeners for ending game
+        setTimeout(() => {
+            endGame('player')
+        }, 2000)
+    }
+    return cpuNewPercentWidth
 }
 
 function hoverToggleOn(event) {
@@ -117,39 +146,6 @@ function removeChoiceListeners() {
     rpsChoice.removeEventListener('click', playerChoice)
 }
 
-function playerChoice(event) {
-    if (event.target.matches('img')) {
-        event.target.classList.add('imgHover');
-        removeChoiceListeners();
-        let picked = document.getElementById(event.target.id)        
-        let playerPick = event.target.id
-        let cpuPick = cpuChoice()
-        setTimeout(() => {
-            console.log('working..')
-            picked.parentElement.style.backgroundColor = 'white';
-            startNextRound();
-        }, 2000);
-
-        // result changes button color, health bar, and text
-        const result = roundResult(playerPick, cpuPick)
-        if (result === 'You lose!') {
-            event.target.parentElement.style.backgroundColor = 'red';
-            gameResponses.textContent = 'You lose!'
-        } else if (result === 'You win!') {
-            event.target.parentElement.style.backgroundColor = 'limegreen';
-            gameResponses.textContent = 'You win!'
-        } else {
-            event.target.parentElement.style.backgroundColor = 'white';
-            gameResponses.textContent = 'Tie!'
-        }
-        let clickEvent = new CustomEvent('choiceClicked', {
-            detail: {message: 'Choice clicked!'},
-            capture: true
-        });
-        document.dispatchEvent(clickEvent);
-    };
-};
-
 function cpuChoice() {
     let rand = Math.random(),
         cpuPick;
@@ -164,31 +160,9 @@ function cpuChoice() {
     return cpuPick
 };
 
-// function roundResult(playerPick, cpuPick) {
-//     if (playerPick === cpuPick) {
-//         console.log(`It\'s a tie! Both chose ${playerPick}!`)
-//     } else if (playerPick === 'rock'  && cpuPick === 'paper') {
-//         console.log('You lose! Paper beats rock!')
-//         reducePlayerHealth();
-//     } else if (playerPick === 'paper'  && cpuPick === 'scissors') {
-//         console.log('You lose! Scissors beats paper!')
-//         reducePlayerHealth();
-//     } else if (playerPick === 'scissors'  && cpuPick === 'rock') {
-//         console.log('You lose! Rock beats scissors!')
-//         reducePlayerHealth();
-//     } else if (playerPick === 'rock'  && cpuPick === 'scissors') {
-//         console.log('You win! Rock beats scissors!')
-//         reduceCpuHealth();
-//     } else if (playerPick === 'paper'  && cpuPick === 'rock') {
-//         console.log('You win! Paper beats rock!')
-//         reduceCpuHealth();
-//     } else if (playerPick === 'scissors'  && cpuPick === 'paper') {
-//         console.log('You win! Scissors beats paper!')
-//         reduceCpuHealth();
-//     }
-// };
 
 function roundResult(playerPick, cpuPick) {
+    console.log('roundresult')
     let result;
     imgChoice.forEach((img) => {
         img.classList.remove('imgHover');
@@ -259,88 +233,66 @@ function startNextRound() {
     }, 1000);
 };
 
+function playerChoice(event) {
+    if (event.target.matches('img')) {
+        event.target.classList.add('imgHover');
+        removeChoiceListeners();
+        let picked = document.getElementById(event.target.id)        
+        let playerPick = event.target.id
+        let cpuPick = cpuChoice()
+        
+        // result changes button color, health bar, and text
+        const result = roundResult(playerPick, cpuPick)
+        if (result === 'You lose!') {
+            event.target.parentElement.style.backgroundColor = 'red';
+            gameResponses.textContent = 'You lose!'
+        } else if (result === 'You win!') {
+            event.target.parentElement.style.backgroundColor = 'limegreen';
+            gameResponses.textContent = 'You win!'
+        } else {
+            event.target.parentElement.style.backgroundColor = 'white';
+            gameResponses.textContent = 'Tie!'
+        }
+        let clickEvent = new CustomEvent('choiceClicked', {
+            detail: {message: 'Choice clicked!'},
+            capture: true
+        });
+        document.dispatchEvent(clickEvent);
 
-// when you click choice, remove the hover listeners and make choice hover as humanChoice
-// // human choice
-// let getHumanChoice = () => {
-//     myChoice = myChoice.toLowerCase();
-//     if (myChoice !== 'rock' && myChoice !== 'paper' && myChoice !== 'scissors') {
-//         alert('Invalid option. Please try again.');
-//         return getHumanChoice();    
-//     } else {
-//         return myChoice;
-//     }
-//  }
+        console.log('starting next round, should be after roundresult')
+        setTimeout(() => {
+            console.log('working..')
+            picked.parentElement.style.backgroundColor = 'white';
+            // cant do that with quote
+            console.log(cpuNewPercentWidth)
+            console.log(playerNewPercentWidth)
+            if (cpuNewPercentWidth > 1 && playerNewPercentWidth > 1) {
+                startNextRound();
+            }
+        }, 2000);
 
-// // score values
-// let humanScore = 0,
-//     computerScore = 0;
+    };
+};
 
-// // random computer choice code
-// let getComputerChoice = () => {
-//     let rand = Math.random();
-//     let cpu;
-//     if (rand <= 1/3) {
-//         cpu = 'rock'
-//     } else if (rand <= 2/3) {
-//         cpu = 'paper'
-//     } else {
-//         cpu = 'scissors'
-//     } 
-//     return cpu;
-// }
+function endGame(winner) {
+    removeChoiceListeners()
+    console.log('working')
+    if (winner === 'player') {
+        playerName.textContent = 'Champion'
+        cpuName.textContent = 'Former Champion'
+        gameResponses.textContent = 'You are the new champion!'
+        // remove listeners
+        // append start game again but with dif text
+    } else {
+        gameResponses.textContent = 'You fought hard! Keep training!'
+    }
+    setTimeout(() => {
+        console.log('bragh')
+        gameResponses.textContent = ''
+        gameResponses.appendChild(gameButton)
+        gameButton.textContent = 'Rematch?'
+        gameButton.addEventListener('click', startGame)
+    }, 2000)
+}
 
-// // human choice
-// let getHumanChoice = () => {
-//     let myChoice = prompt('Choose rock, paper, or scissors.');
-//     myChoice = myChoice.toLowerCase();
-//     if (myChoice !== 'rock' && myChoice !== 'paper' && myChoice !== 'scissors') {
-//         alert('Invalid option. Please try again.');
-//         return getHumanChoice();    
-//     } else {
-//         return myChoice;
-//     }
-//  }
-
-//  // one round
-// let playRound = (humanChoice, computerChoice) => {
-//     if (humanChoice === computerChoice) {
-//         alert(`It\'s a tie! Both chose ${humanChoice}!`)
-//     } else if (humanChoice === 'rock'  && computerChoice === 'paper') {
-//         alert('You lose! Paper beats rock!')
-//         computerScore++
-//     } else if (humanChoice === 'paper'  && computerChoice === 'scissors') {
-//         alert('You lose! Scissors beats paper!')
-//         computerScore++
-//     } else if (humanChoice === 'scissors'  && computerChoice === 'rock') {
-//         alert('You lose! Rock beats scissors!')
-//         computerScore++
-//     } else if (humanChoice === 'rock'  && computerChoice === 'scissors') {
-//         alert('You win! Rock beats scissors!')
-//         humanScore++
-//     } else if (humanChoice === 'paper'  && computerChoice === 'rock') {
-//         alert('You win! Paper beats rock!')
-//         humanScore++
-//     } else if (humanChoice === 'scissors'  && computerChoice === 'paper') {
-//         alert('You win! Scissors beats paper!')
-//         humanScore++
-//     }
-// }
-
-// let playGame = () => {
-//     for (i = 0; i < 5; i++) {
-//         humanSelection = getHumanChoice()
-//         computerSelection = getComputerChoice()
-//         playRound(humanSelection, computerSelection)
-//         alert(`Your score: ${humanScore}. Computer score: ${computerScore}.`)
-//     }   
-//     if (humanScore > computerScore) {
-//         alert(`You win! Final score is ${humanScore} to ${computerScore}.`)
-//     } else if (humanScore === computerScore) {
-//         alert( `Tie! Final score is ${humanScore} to ${computerScore}.`)
-//     } else {
-//         alert(`You lose! Final score is ${humanScore} to ${computerScore}.`)
-//     }
-// }
-
-// playGame()
+// make everything more clear, and put function for resetting parameters
